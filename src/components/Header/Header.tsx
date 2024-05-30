@@ -2,33 +2,29 @@ import React, { useState, type MouseEvent, useMemo, useCallback } from 'react'
 
 import { useRouter } from 'next/router'
 
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Drawer from '@mui/material/Drawer'
-import Divider from '@mui/material/Divider'
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Box,
+  Menu,
+  MenuItem,
+  Drawer,
+  Divider,
+} from '@mui/material'
 
 import TelegramIcon from '@mui/icons-material/Telegram'
 import InstagramIcon from '@mui/icons-material/Instagram'
 import { AccountCircle } from '@mui/icons-material'
 
 import { styled } from '@mui/system'
+import styles from './Header.module.scss'
 
 const CustomDivider = styled(Divider)(() => ({
   backgroundColor: 'white',
 }))
-
-const headerStyle: React.CSSProperties = {
-  position: 'sticky',
-  width: '100%',
-  top: 0,
-  left: 0,
-}
 
 export default function Header() {
   const router = useRouter()
@@ -76,7 +72,7 @@ export default function Header() {
   )
 
   return (
-    <div style={headerStyle}>
+    <div className={styles.header}>
       <AppBar color="primary">
         <Toolbar>
           <Typography

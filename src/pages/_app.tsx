@@ -2,13 +2,15 @@ import { useEffect } from 'react'
 
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
+import { DocumentProps } from 'next/dist/pages/_document'
 
 import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter'
 import type { DocumentHeadTagsProps } from '@mui/material-nextjs/v13-pagesRouter'
-import { DocumentProps } from 'next/dist/pages/_document'
 import ScopedCssBaseline from '@mui/material/ScopedCssBaseline'
 
 import PageLayout from '@/layouts/PageLayout/PageLayout'
+import AuthLayout from '@/layouts/AuthLayout/AuthLayout'
+
 import Header from '@/components/Header/Header'
 
 export default function App(
@@ -37,11 +39,15 @@ export default function App(
   return (
     <AppCacheProvider {...props}>
       <ScopedCssBaseline>
-        {checkAuthentication() ? null : (
+        {checkAuthentication() ? (
           <PageLayout>
             <Header />
             <Component {...pageProps} />
           </PageLayout>
+        ) : (
+          <AuthLayout>
+            <Component {...pageProps} />
+          </AuthLayout>
         )}
       </ScopedCssBaseline>
     </AppCacheProvider>
