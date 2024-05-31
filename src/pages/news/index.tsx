@@ -21,12 +21,6 @@ export default function News() {
       <div>News</div>
       <div>News</div>
       <div>News</div>
-      <div>News</div>
-      <div>News</div>
-      <div>News</div>
-      <div>News</div>
-      <div>News</div>
-      <div>News</div>
     </>
   )
 }

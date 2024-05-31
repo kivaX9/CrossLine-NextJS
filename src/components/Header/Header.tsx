@@ -21,6 +21,7 @@ import { AccountCircle } from '@mui/icons-material'
 
 import { styled } from '@mui/system'
 import styles from './Header.module.scss'
+import newLocalStorageUser from '@/utils/LocalStorageUser'
 
 const CustomDivider = styled(Divider)(() => ({
   backgroundColor: 'white',
@@ -49,8 +50,11 @@ export default function Header() {
   const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }, [])
+
   const handleClose = useCallback(() => {
     setAnchorEl(null)
+    // newLocalStorageUser.removeLocalStorageUser()
+    // router.push('/auth/login')
   }, [])
 
   const [state, setState] = useState(false)

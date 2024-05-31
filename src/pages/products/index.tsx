@@ -20,14 +20,6 @@ export default function Products() {
       <div>Products</div>
       <div>Products</div>
       <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
-      <div>Products</div>
     </>
   )
 }

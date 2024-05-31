@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
@@ -7,49 +7,63 @@ import { DocumentProps } from 'next/dist/pages/_document'
 import { AppCacheProvider } from '@mui/material-nextjs/v13-pagesRouter'
 import type { DocumentHeadTagsProps } from '@mui/material-nextjs/v13-pagesRouter'
 import ScopedCssBaseline from '@mui/material/ScopedCssBaseline'
+import CircularProgress from '@mui/material/CircularProgress'
 
 import PageLayout from '@/layouts/PageLayout/PageLayout'
 import AuthLayout from '@/layouts/AuthLayout/AuthLayout'
 
 import Header from '@/components/Header/Header'
+import { ErrorProvider } from '@/contexts/ErrorContext'
+
+import newLocalStorageUser from '@/utils/LocalStorageUser'
 
 export default function App(
   { Component, pageProps }: AppProps,
   props: DocumentProps & DocumentHeadTagsProps,
 ) {
   const router = useRouter()
+  const [isAuthenticated, setAuthenticated] = useState<boolean | null>(null)
 
   useEffect(() => {
-    const isAuthenticated = checkAuthentication()
+    const localUser = newLocalStorageUser.getLocalStorageUser()
+    setAuthenticated(Boolean(localUser?.accessToken))
 
-    if (router.pathname === '/') {
-      if (isAuthenticated) {
-        router.replace('/products')
-      } else {
-        router.replace('/login')
-      }
+    if (isAuthenticated === null) return
+
+    const authRouter: string[] = ['/auth/login', '/auth/register', '/']
+    const currentPath = router.pathname
+
+    if (isAuthenticated && authRouter.includes(currentPath)) {
+      router.push('/products')
+    } else if (!isAuthenticated && !authRouter.includes(currentPath)) {
+      router.push('/auth/login')
     }
-  }, [router, router.pathname])
+  }, [isAuthenticated, router])
 
-  // Функция проверки аутификации
-  function checkAuthentication() {
-    return false
+  if (isAuthenticated === null) {
+    return (
+      <AuthLayout>
+        <CircularProgress size={50} />
+      </AuthLayout>
+    )
   }
 
   return (
-    <AppCacheProvider {...props}>
-      <ScopedCssBaseline>
-        {checkAuthentication() ? (
-          <PageLayout>
-            <Header />
-            <Component {...pageProps} />
-          </PageLayout>
-        ) : (
-          <AuthLayout>
-            <Component {...pageProps} />
-          </AuthLayout>
-        )}
-      </ScopedCssBaseline>
-    </AppCacheProvider>
+    <ErrorProvider>
+      <AppCacheProvider {...props}>
+        <ScopedCssBaseline>
+          {!isAuthenticated ? (
+            <AuthLayout>
+              <Component {...pageProps} />
+            </AuthLayout>
+          ) : (
+            <PageLayout>
+              <Header />
+              <Component {...pageProps} />
+            </PageLayout>
+          )}
+        </ScopedCssBaseline>
+      </AppCacheProvider>
+    </ErrorProvider>
   )
 }
