@@ -9,11 +9,10 @@ import {
   Button,
   IconButton,
   Box,
-  Menu,
-  MenuItem,
-  Drawer,
   Divider,
 } from '@mui/material'
+import ProfileModal from '@/components/Modals/ProfileModal/ProfileModal'
+import HeaderMenu from './HeaderMenu'
 
 import TelegramIcon from '@mui/icons-material/Telegram'
 import InstagramIcon from '@mui/icons-material/Instagram'
@@ -21,43 +20,31 @@ import { AccountCircle } from '@mui/icons-material'
 
 import { styled } from '@mui/system'
 import styles from './Header.module.scss'
-import newLocalStorageUser from '@/utils/LocalStorageUser'
 
 const CustomDivider = styled(Divider)(() => ({
   backgroundColor: 'white',
 }))
 
 export default function Header() {
-  const router = useRouter()
-
-  const disabledProducts = useMemo(() => {
-    return router.pathname === '/products'
-  }, [router.pathname])
-  const disabledNews = useMemo(() => {
-    return router.pathname === '/news'
-  }, [router.pathname])
-
-  const goNews = useCallback(() => {
-    return router.push('/news')
-  }, [router])
-  const goProducts = useCallback(() => {
-    return router.push('/products')
-  }, [router])
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
-
-  const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }, [])
-
-  const handleClose = useCallback(() => {
-    setAnchorEl(null)
-    // newLocalStorageUser.removeLocalStorageUser()
-    // router.push('/auth/login')
-  }, [])
-
   const [state, setState] = useState(false)
+  const router = useRouter()
+  const currentPath = router.pathname
+
+  const disabledProducts = useMemo(
+    () => currentPath === '/products',
+    [currentPath],
+  )
+  const disabledNews = useMemo(() => currentPath === '/news', [currentPath])
+
+  const goNews = useCallback(() => router.push('/news'), [router])
+  const goProducts = useCallback(() => router.push('/products'), [router])
+
+  const handleOpenMenu = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget),
+    [],
+  )
+  const handleCloseMenu = useCallback(() => setAnchorEl(null), [])
 
   const toggleDrawer = useCallback(
     (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -70,9 +57,9 @@ export default function Header() {
       }
 
       setState((prev) => !prev)
-      handleClose()
+      handleCloseMenu()
     },
-    [handleClose],
+    [handleCloseMenu],
   )
 
   return (
@@ -107,7 +94,7 @@ export default function Header() {
 
             <IconButton
               size="medium"
-              onClick={handleClick}
+              onClick={handleOpenMenu}
               color="inherit"
             >
               <AccountCircle />
@@ -128,29 +115,16 @@ export default function Header() {
         </Toolbar>
       </AppBar>
 
-      {/* Перенсти в отдельный компонент */}
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={toggleDrawer}>Профиль</MenuItem>
-        <MenuItem
-          onClick={handleClose}
-          color="error"
-        >
-          <Typography color={'red'}>Выйти</Typography>
-        </MenuItem>
-      </Menu>
+      <HeaderMenu
+        isOpened={anchorEl}
+        handleCloseMenu={handleCloseMenu}
+        toggleDrawer={toggleDrawer}
+      />
 
-      {/* Перенсти в отдельный компонент */}
-      <Drawer
-        anchor="right"
+      <ProfileModal
         open={state}
-        onClose={toggleDrawer}
-      >
-        Профиль
-      </Drawer>
+        handleClose={toggleDrawer}
+      />
     </div>
   )
 }

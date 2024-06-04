@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
         const currentRefreshToken = localUser?.refreshToken
 
         const { data } = await axios.post(`${baseURL}/auth/refresh`, {
-          currentRefreshToken,
+          token: currentRefreshToken,
         })
 
         LocalStorageUser.setLocalStorageUser({

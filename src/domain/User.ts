@@ -9,3 +9,8 @@ export interface User {
   accessToken?: string
   refreshToken?: string
 }
+
+export interface UpdateUser {
+  username: string
+  password: string
+}
